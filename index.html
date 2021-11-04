@@ -1,0 +1,134 @@
+<html>
+
+<head>
+    <title>After School Courses</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- <a href="https://icons8.com/icon/1759/math">Math icon by Icons8</a> -->
+</head>
+<style>
+    * {
+        margin: 5px;
+    }
+
+    /* .border {
+       border: 20%;
+    } */
+    .w-20 {
+        width: 20%;
+        border-radius: 10%;
+    }
+
+    .m-5 {
+        margin: 7px;
+    }
+
+    .fl-2 {
+        float: right;
+
+    }
+
+    .fl-1 {
+        float: left;
+
+    }
+</style>
+
+<body>
+    <div id="app">
+        <header>
+            <h1 v-text="sitename"></h1>
+            <button v-on:click='showCheckout'>
+                {{cartItemCount}}
+                <span class="fas fa-cart-plus"></span> Checkout
+            </button>
+        </header>
+        <main>
+            <div class="border border-primary w-20" v-if='showcourse'>
+                <div>
+                    <div>
+                        <p>Subject: {{course.title}}</p>
+                        <p>Location: {{course.location}}</p>
+                        <p>Price: {{course.price}}</p>
+                        <p>Spaces: {{course.availablespaces }}</p>
+                    </div>
+                    <!-- <img class="fl-2" src="https://img.icons8.com/ios/100/000000/math.png" /> -->
+
+                    <button class="btn btn-primary btn-sm" v-on:click='addToCart' v-if='canAddToCart'>Add to
+                        cart</button>
+                    <button class="btn btn-primary " disabled="disabled" v-else>Add to cart</button>
+                </div>
+            </div>
+            <div v-else>
+                <h2>Checkout</h2>
+                <p>
+                    <strong>First Name: </strong>
+                    <input v-model.trim="order.firstName">
+                </p>
+                <p>
+                    <strong>Last Name: </strong>
+                    <input v-model.trim="order.lastName">
+                </p>
+
+
+                <h2>Order Information</h2>
+                <p>First Name: {{order.firstName}}</p>
+                <p>Last Name: {{order.lastName}}</p>
+
+                <button v-on:click="submitForm">Place Order</button>
+
+
+            </div>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        var webstore = new Vue({
+            el: '#app',
+            data: {
+                sitename: 'Vue.js Pet Depot',
+                course: {
+                    id: 1001,
+                    title: "Math",
+                    location: "London",
+                    price: 100,
+                    availablespaces: 5,
+                    image: "images/course-fullsize.png"
+                },
+                cart: [],
+                showcourse: true,
+                order: {
+                    firstName: '',
+                    lastName: '',
+                },
+            },
+            methods: {
+                addToCart() {
+                    this.cart.push(this.course.id);
+                    if (this.course.availablespaces > 0) { this.course.availablespaces -= 1 };
+                },
+                showCheckout() {
+                    this.showcourse = this.showcourse ? false : true;
+                },
+                submitForm() {
+                    alert('Order submitted!')
+                }
+            },
+            computed: {
+                cartItemCount() {
+                    return this.cart.length;
+                },
+                canAddToCart() {
+                    return this.course.availablespaces > 0;
+                }
+            },
+        });
+    </script>
+</body>
+
+</html>
