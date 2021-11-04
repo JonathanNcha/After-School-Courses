@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- 
+    Jonathan Ncha
+    jn652@live.mdx.ac.uk
+    M00852269
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +18,15 @@
 
 <body>
     <div id="app">
+        <!-- shows cart items -->
         <header>
             <h1 v-text="sitename"></h1>
-            <button disabled type="button" class="btn btn-secondary btn-sm"><span class="fas fa-cart-plus"> </span> Cart <span
-                    class="badge">{{cartItemCount}}</span></button>
+            <button disabled type="button" class="btn btn-secondary btn-sm"><span class="fas fa-cart-plus"> </span> Cart
+                <span class="badge">{{cartItemCount}}</span></button>
         </header>
         <br>
         <main>
+            <!-- shows course information -->
             <div v-if='showcourse'>
                 <div class="aligned">
                     <i class="far fa-calculator-alt fa-10x"></i>
@@ -42,6 +50,7 @@
         </main>
     </div>
 
+    <!-- internal stylesheet -->
     <style>
         #app {
             margin: 5%;
@@ -56,6 +65,8 @@
             padding-left: 20px;
         }
     </style>
+
+    <!-- Initializing the vue app -->
     <script>
         var webstore = new Vue({
             el: '#app',
@@ -73,6 +84,7 @@
             },
 
             methods: {
+                // adds the course to the cart and reduces the available spaces
                 addToCart: function () {
                     this.cart.push(this.course.id);
                     if (this.course.availableSpace > 0) { this.course.availableSpace -= 1 };
@@ -81,9 +93,11 @@
             },
 
             computed: {
+                // function checks if there are still available spaces for the course
                 canAddToCart: function () {
                     return this.course.availableSpace > 0;
                 },
+                // counts the items in the cart
                 cartItemCount() {
                     return this.cart.length;
                 }
