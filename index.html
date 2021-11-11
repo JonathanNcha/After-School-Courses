@@ -34,7 +34,8 @@
                 </button>
 
                 <div class="input-group input-size">
-                    <input placeholder="Search..." type="search" class="form-control border-primary" v-if='showlesson' v-model="filter">
+                    <input placeholder="Search..." type="search" class="form-control border-primary" v-if='showlesson'
+                        v-model="filter">
                 </div>
 
                 <button class="btn btn-primary btn-sm" v-on:click='showCheckout' v-if='!(showlesson)'> Back to
@@ -151,12 +152,14 @@
                     <form @submit="checkForm">
                         <span>
                             <strong>Name:</strong>
-                            <input type="text" v-model="name" v-on:keypress="checkForm" v-on:keyup="checkForm" required />
+                            <input type="text" v-model="name" v-on:keypress="checkForm" v-on:keyup="checkForm"
+                                required />
 
                         </span>
                         <span>
                             <strong>Phone:</strong>
-                            <input type="number" v-model.number="phone" v-on:keypress="checkForm" v-on:keyup="checkForm" required />
+                            <input type="number" v-model.number="phone" v-on:keypress="checkForm" v-on:keyup="checkForm"
+                                required />
 
                         </span>
                         <span>
@@ -176,54 +179,53 @@
     <!-- internal stylesheet -->
     <style>
         #app {
-    margin: 4%;
-}
+            margin: 4%;
+        }
 
-.aligned {
-    display: flex;
-    align-items: center;
-}
+        .aligned {
+            display: flex;
+            align-items: center;
+        }
 
-.card {
-    border-radius: 8%;
-}
+        .card {
+            border-radius: 8%;
+        }
 
-span {
-    padding-left: 20px;
-}
+        span {
+            padding-left: 20px;
+        }
 
-.w-20 {
-    width: auto;
-    height: auto;
-}
+        .w-20 {
+            width: auto;
+            height: auto;
+        }
 
-.w-50 {
-    width: 50%;
-}
+        .w-50 {
+            width: 50%;
+        }
 
-.line {
-    line-height: 50%;
-    ;
-}
+        .line {
+            line-height: 50%;
+            ;
+        }
 
-.sum {
-    display: inline-block;
-    padding: 15px;
-    margin: 5px;
-}
+        .sum {
+            display: inline-block;
+            padding: 15px;
+            margin: 5px;
+        }
 
-aside {
-    float: left;
-    height: 800px;
-}
+        aside {
+            float: left;
+            height: 800px;
+        }
 
-.input-size {
-    width: 50%;
-    float: right;
-}
+        .input-size {
+            width: 50%;
+            float: right;
+        }
     </style>
 
-    <!-- Initializing the vue app -->
     <script>
         var webstore = new Vue({
             el: '#app',
