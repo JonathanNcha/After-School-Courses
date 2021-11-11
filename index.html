@@ -227,35 +227,130 @@ aside {
         var webstore = new Vue({
             el: '#app',
             data: {
-                sitename: 'After School Club',
-                course: {
-                    id: 1001,
-                    title: "Math",
-                    location: "London",
-                    price: 100,
-                    availableSpace: 5
-                },
+                sitename: '',
+                lesson: lessons,
                 cart: [],
-                showcourse: true
+                lessonCart: [],
+                showlesson: true,
+                name: '',
+                phone: '',
+                form: false,
+                sortBy: 'title',
+                sortDirection: 'asc',
+                filter: '',
+                flag: 'true'
             },
 
             methods: {
-                // adds the course to the cart and reduces the available spaces
-                addToCart: function () {
-                    this.cart.push(this.course.id);
-                    if (this.course.availableSpace > 0) { this.course.availableSpace -= 1 };
-                }
+                setSortBy() {
+                    this.sortBy = '';
+                },
+
+                setSortDirection() {
+                    this.sortDirection = '';
+                },
+
+                addToCart(lesson) {
+                    var lessonTitle = lesson.title;
+                    var lessonLocation = lesson.location;
+                    var lessonPrice = lesson.price;
+                    var lessonImage = lesson.image;
+                    var addedSpaces = 1;
+                    for (var index in this.cart) {
+                        var cartItem = this.cart[index];
+                        if (lesson.id === cartItem.id) {
+                            addedSpaces = parseInt(cartItem.spaces) + 1;
+                            itemInCart = this.cart.indexOf(cartItem);
+                            this.cart.splice(itemInCart, 1);
+                        }
+                    }
+                    var itemToAdd = {
+                        title: lessonTitle,
+                        location: lessonLocation,
+                        price: lessonPrice,
+                        image: lessonImage,
+                        spaces: addedSpaces,
+                        id: lesson.id
+                    }
+                    this.cart.push(itemToAdd);
+                    this.lessonCart.push(lesson.id);
+                },
+
+                removeFromCart(lesson) {
+                    lesson.spaces--;
+                    if (lesson.spaces <= 0) {
+                        var i = this.cart.indexOf(lesson);
+                        this.cart.splice(i, 1);
+                    }
+                    this.lessonCart.pop(lesson.id);
+                },
+
+                showCheckout() {
+                    this.showlesson = this.showlesson ? false : true;
+                },
+
+                canAddToCart(lesson) {
+                    return lesson.availableSpace > this.cartCount(lesson.id);
+                },
+
+                cartCount(id) {
+                    let count = 0;
+                    for (let i = 0; i < this.lessonCart.length; i++) {
+
+                        if (this.lessonCart[i] === id) {
+                            count++;
+                        }
+                    }
+                    return count;
+                },
+
+                checkoutSuccess() {
+                    alert('Order Submitted!')
+                },
+
+                checkForm() {
+                    let name = this.name;
+                    let phone = this.phone;
+                    this.form = (name.match("^[a-zA-Z_ ]+$") && phone) ? true : false;
+                },
+
+                searchLessons(lesson, value, title, location) {
+                    return lesson.filter(function (item) {
+                        return item[title].toLowerCase().includes(value) || item[location].toLowerCase().includes(value)
+                    })
+
+                },
 
             },
-
             computed: {
-                // function checks if there are still available spaces for the course
-                canAddToCart: function () {
-                    return this.course.availableSpace > 0;
+                sortedLessons() {
+                    if (this.filter != 0)
+                        return this.searchLessons(this.lesson, this.filter, 'title', 'location')
+
+                    return this.lesson.sort((a, b) => {
+                        let modifier = 1;
+                        if (this.sortDirection === 'desc')
+                            modifier = -1;
+                        if (a[this.sortBy] < b[this.sortBy])
+                            return -1 * modifier;
+                        if (a[this.sortBy] > b[this.sortBy])
+                            return 1 * modifier;
+                        return 0;
+                    });
+
+
                 },
-                // counts the items in the cart
+
+
+
                 cartItemCount() {
-                    return this.cart.length;
+                    return this.lessonCart.length;
+                },
+            },
+
+            filters: {
+                currency(price) {
+                    return "$" + price;
                 }
             }
         });
