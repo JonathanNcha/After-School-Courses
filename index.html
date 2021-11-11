@@ -21,30 +21,152 @@
         <!-- shows cart items -->
         <header>
             <h1 v-text="sitename"></h1>
-            <button disabled type="button" class="btn btn-secondary btn-sm"><span class="fas fa-cart-plus"> </span> Cart
-                <span class="badge">{{cartItemCount}}</span></button>
+
+            <div>
+                <button class=" btn btn-secondary btn-sm" v-on:click='showCheckout' v-if='cartItemCount > 0'><span
+                        class="fas fa-cart-plus"> </span> Cart
+                    <span class="badge">{{cartItemCount}}</span>
+                </button>
+                <button class="btn btn-secondary btn-sm" disabled="disabled" v-else><span class="fas fa-cart-plus">
+                    </span> Cart
+                    <span class="badge">{{cartItemCount}}</span>
+                </button>
+
+                <div class="input-group input-size">
+                    <input placeholder="Search..." type="search" class="form-control border-primary" v-if='showlesson' v-model="filter">
+                </div>
+
+                <button class="btn btn-primary btn-sm" v-on:click='showCheckout' v-if='!(showlesson)'> Back to
+                    Lessons
+                </button>
+            </div>
+
         </header>
         <br>
+
         <main>
-            <!-- shows course information -->
-            <div v-if='showcourse'>
-                <div class="aligned">
-                    <i class="far fa-calculator-alt fa-10x"></i>
-                    <span>
-                        <p>Subject: {{course.title}}</p>
-                        <p>Location: {{course.location}}</p>
-                        <p>Price: {{course.price}}</p>
-                        <p>Spaces: {{course.availableSpace}}</p>
-                    </span>
+            <!-- shows lesson information -->
+            <div v-if='showlesson'>
+                <aside>
+                    <div>
+                        <div>Sort By</div>
+                        <div>
+                            <input id="subject" type="radio" name="sort" v-model="sortBy" value="title"
+                                v-on:click="setSortBy" required checked>
+                            <label for="subject">Subject</label>
+                        </div>
+
+                        <div>
+                            <input id="location" type="radio" name="sort" v-model="sortBy" value="location"
+                                v-on:click="setSortBy">
+                            <label for="location">Location</label>
+                        </div>
+
+                        <div>
+                            <input id="price" type="radio" name="sort" v-model="sortBy" value="price"
+                                v-on:click="setSortBy">
+                            <label for="price">Price</label>
+                        </div>
+
+                        <div>
+                            <input id="availability" type="radio" name="sort" v-model="sortBy" value="availableSpace"
+                                v-on:click="setSortBy">
+                            <label for="availability">Availability</label>
+                        </div>
+                        <br>
+                        <div>
+                            <input id="asc" type="radio" name="order" v-model="sortDirection" value="asc"
+                                v-on:click="setSortDirection">
+                            <label for="asc">Ascending</label>
+                        </div>
+
+                        <div>
+                            <input id="desc" type="radio" name="order" v-model="sortDirection" value="desc"
+                                v-on:click="setSortDirection">
+                            <label for="desc">Descending</label>
+                        </div>
+                    </div>
+                </aside>
+                <div v-for="lesson in sortedLessons" class="sum">
+                    <div class="card border-primary w-20">
+                        <div class=" card-body">
+                            <div class="aligned">
+                                <i :class="lesson.image"></i>
+                                <span class="line">
+                                    <br><br>
+                                    <p>Subject: {{lesson.title}}</p>
+                                    <p>Location: {{lesson.location}}</p>
+                                    <p>Price: {{lesson.price | currency}}</p>
+                                    <p>Spaces: {{lesson.availableSpace-cartCount(lesson.id)}}</p>
+                                </span>
+                            </div>
+
+                            <div class="text-center mt-2">
+                                <button class=" btn btn-primary btn-sm w-50" v-on:click='addToCart(lesson)'
+                                    v-if='canAddToCart(lesson)'>Add
+                                    to
+                                    cart</button>
+                                <button class="btn btn-primary btn-sm w-50" disabled="disabled" v-else>Add to
+                                    cart</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                 </div>
-                <br>
-                <button class="btn btn-primary btn-sm" v-on:click='addToCart' v-if='canAddToCart'>Add to
-                    cart</button>
-                <button class="btn btn-primary " disabled="disabled" v-else>Add to cart</button>
+                <div class="text-center noSearchMessage" v-if="sortedLessons.length===0">
+                    <h2> No Match Found</h2>
+                </div>
 
             </div>
+
             <div v-else>
-                <h2>Checkout</h2>
+                <h2>Cart</h2>
+
+                <div v-for="lesson in cart" class="sum">
+                    <div class="card border-primary w-20">
+                        <div class=" card-body">
+                            <div class="aligned">
+                                <i :class="lesson.image"></i>
+                                <span class="line">
+                                    <br><br>
+                                    <p>Subject: {{lesson.title}}</p>
+                                    <p>Location: {{lesson.location}}</p>
+                                    <p>Added Spaces: {{lesson.spaces}}</p>
+                                    <p>Price: {{lesson.price*lesson.spaces | currency}}</p>
+                                </span>
+                            </div>
+
+                            <div class="text-center mt-2">
+                                <button class=" btn btn-primary btn-sm w-50"
+                                    v-on:click='removeFromCart(lesson)'>Remove</button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div>
+                    <h2>Checkout</h2>
+                    <form @submit="checkForm">
+                        <span>
+                            <strong>Name:</strong>
+                            <input type="text" v-model="name" v-on:keypress="checkForm" v-on:keyup="checkForm" required />
+
+                        </span>
+                        <span>
+                            <strong>Phone:</strong>
+                            <input type="number" v-model.number="phone" v-on:keypress="checkForm" v-on:keyup="checkForm" required />
+
+                        </span>
+                        <span>
+                            <button class="btn btn-primary btn-sm" type="submit" v-if="form"
+                                v-on:click="checkoutSuccess">Checkout</button>
+
+                            <button class="btn btn-primary btn-sm" v-else disabled="disabled">Checkout</button>
+
+                        </span>
+                    </form>
+                </div>
             </div>
 
         </main>
