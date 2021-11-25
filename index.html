@@ -174,6 +174,7 @@
         </main>
     </div>
 
+    <!-- Initialize the Vue app -->
     <script>
         var webstore = new Vue({
             el: '#app',
@@ -193,27 +194,17 @@
             },
 
             methods: {
+                // setter method for sortBy
                 setSortBy() {
                     this.sortBy = '';
                 },
 
+                 // setter method for sortDirection
                 setSortDirection() {
                     this.sortDirection = '';
                 },
-
-                updateResult(query) {
-                    let resultList = document.querySelector(".result");
-                    resultList.innerHTML = "";
-
-                    arr.map(function (algo) {
-                        query.split(" ").map(function (word) {
-                            if (algo.toLowerCase().indexOf(word.toLowerCase()) != -1) {
-                                resultList.innerHTML += `<li class="list-group-item">${algo}</li>`;
-                            }
-                        })
-                    })
-                },
-
+                
+                // This method adds items to the cart
                 addToCart(lesson) {
                     var lessonTitle = lesson.title;
                     var lessonLocation = lesson.location;
@@ -240,6 +231,7 @@
                     this.lessonCart.push(lesson.id);
                 },
 
+                // this methods removes the item from the cart if only one space is in the cart
                 removeFromCart(lesson) {
                     lesson.spaces--;
                     if (lesson.spaces <= 0) {
@@ -249,14 +241,17 @@
                     this.lessonCart.pop(lesson.id);
                 },
 
+                // this methods switches between the product and checkout page
                 showCheckout() {
                     this.showlesson = this.showlesson ? false : true;
                 },
 
+                // this method checks if an item can be added to the cart
                 canAddToCart(lesson) {
                     return lesson.availableSpace > this.cartCount(lesson.id);
                 },
 
+                // this method counts the items in the cart
                 cartCount(id) {
                     let count = 0;
                     for (let i = 0; i < this.lessonCart.length; i++) {
@@ -268,24 +263,26 @@
                     return count;
                 },
 
+                // this method displays a message after the checkout has been successful
                 checkoutSuccess() {
                     alert('Order Submitted!')
                 },
 
+                // this method validates the user's name and phone number
                 checkForm(e) {
                     let name = this.name;
                     let phone = this.phone;
                     this.form = (name.match("^[a-zA-Z_ ]*$") && phone) ? true : false;
                 },
 
+                // this method handles the search for the app
                 searchLessons(lesson, value, title, location) {
                     return lesson.filter(function (item) {
                         return item[title].toLowerCase().includes(value) || item[location].toLowerCase().includes(value)
                     })
-
                 },
-
             },
+
             computed: {
                 sortedLessons() {
                     if (this.filter != 0)
@@ -310,6 +307,7 @@
             },
 
             filters: {
+                // this filter formats the currency to USD
                 currency(price) {
                     return "$" + price;
                 }
